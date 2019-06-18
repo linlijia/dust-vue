@@ -8,7 +8,7 @@
           <p class="brand-info__intro">上海市曌阳智能科技有限公司</p>
         </div>
         <div class="login-main">
-          <h3 class="login-title">管理员登录</h3>
+          <h3 class="login-title">用户登录</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
             <el-form-item prop="userName">
               <el-input v-model="dataForm.userName" placeholder="帐号"></el-input>
@@ -154,15 +154,16 @@
     }
     .login-main {
       position: absolute;
-      top: 0;
-      right: 0;
-      padding: 150px 60px 180px;
-      width: 470px;
-      min-height: 100%;
+      top: 25%;
+      right: 10%;
+      padding: 30px 40px;
+      width: 400px;
+      min-height: 35%;
       background-color: #fff;
     }
     .login-title {
       font-size: 16px;
+      margin-bottom: 20px;
     }
     .login-captcha {
       overflow: hidden;
@@ -173,7 +174,7 @@
     }
     .login-btn-submit {
       width: 100%;
-      margin-top: 38px;
+      margin-top: 20px;
     }
   }
 </style>
