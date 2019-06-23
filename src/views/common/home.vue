@@ -19,7 +19,7 @@
           <el-col :span="8">
             <p>总设备数：{{num.total || 0}}</p>
             <p>在线设备数：{{num.online || 0}}</p>
-            <p>故障设备数：{{num.failture || 0}}</p>
+            <p>故障设备数：{{num.failure || 0}}</p>
           </el-col>
         </el-row>
         <el-table
@@ -88,7 +88,7 @@
     data () {
       return {
         num: {
-          failture: 0,
+          failure: 0,
           offline: 0,
           online: 0,
           total: 0},
@@ -160,7 +160,7 @@
   }
   .home-table {
 
-    
+
   }
 </style>
 
