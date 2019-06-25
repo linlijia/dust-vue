@@ -73,7 +73,6 @@
         align="center"
         label="故障类型">
       </el-table-column>
-      troubleCodeList
       <el-table-column
         prop="troubleDescription"
         header-align="center"
