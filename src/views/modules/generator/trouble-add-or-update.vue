@@ -37,7 +37,7 @@
         <el-input v-model="dataForm.troubleDescription" placeholder=""></el-input>
       </el-form-item>
 
-      <el-form-item label="是否解决" prop="solved">
+      <el-form-item label="故障处理状态" prop="solved">
         <el-radio
           v-model="dataForm.solved"
           v-for="(item,index) in solvedAtrr"
@@ -54,10 +54,18 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="处理方式" prop="solvedMethod">
-        <el-input v-model="dataForm.solvedMethod" placeholder=""></el-input>
+        <el-select v-model="dataForm.solvedMethod">
+          <el-option v-for="(i,idx) in solvedMethodList" :key="idx" :value="i.val" :label="i.label"/>
+        </el-select>
       </el-form-item>
+
       <el-form-item label="解决人员" prop="troubleShooter">
-        <el-input v-model="dataForm.troubleShooter" placeholder="故障解决人员（0：表示前端系统自己恢复）"></el-input>
+        <!-- <el-input v-model="dataForm.opsUser" placeholder="运维人员"></el-input> -->
+        <el-select v-model="dataForm.troubleShooter" placeholder="解决人员">
+          <el-option v-for="(i, idx) in userList" :key="idx" :value="i.userId" :label="i.name"/>
+          <!--<el-option v-for="item in userList" :key="item.userId" :label="item.name"-->
+          <!--:value="item.userId"></el-option>-->
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -92,6 +100,8 @@
         solvedAtrr: [{label: '已解决', val: 1}, {label: '未解决', val: 0}],
         troubleCodeList: [],
         troubleTypes: [],
+        userList: [],
+        solvedMethodList: [{label: '设备自修复', val: 0}, {label: '远程处理', val: 1}, {label: '现场处理', val: 2}],
         dataRule: {
           happenTime: [
             {required: true, message: '发生时间不能为空', trigger: 'blur'}
@@ -126,6 +136,7 @@
     mounted() {
       this.getSiteList()
       this.getTroubleTypsList()
+      this.getUserList()
     },
     methods: {
       init(id) {
@@ -215,6 +226,15 @@
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.troubleCodeList = data.data
+          }
+        })
+      },
+      getUserList() {
+        this.$http({
+          url: this.$http.adornUrl('/sys/user/list?limit=1008611')
+        }).then(({data}) => {
+          if (data.page) {
+            this.userList = data.page.list || []
           }
         })
       }

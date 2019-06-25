@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:trouble:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <!--<el-button v-if="isAuth('generator:trouble:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
         <el-button v-if="isAuth('generator:trouble:delete')" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
         </el-button>
@@ -25,16 +25,29 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        type="index"
+        :index="(index)=>{return (pageIndex-1)*pageSize + index +1}"
         header-align="center"
         align="center"
-        label="编号">
+        label="序号">
       </el-table-column>
+      <!--<el-table-column-->
+      <!--prop="id"-->
+      <!--header-align="center"-->
+      <!--align="center"-->
+      <!--label="编号">-->
+      <!--</el-table-column>-->
       <el-table-column
         prop="happenTime"
         header-align="center"
         align="center"
         label="发生时间">
+      </el-table-column>
+      <el-table-column
+        prop="siteName"
+        header-align="center"
+        align="center"
+        label="站点名称">
       </el-table-column>
       <el-table-column
         prop="mn"
@@ -66,7 +79,8 @@
         prop="solved"
         header-align="center"
         align="center"
-        label="是否解决">
+        :formatter="(row)=>{return row.solved == 0?'未解决' : row.solved ==1?'已解决' :'--'}"
+        label="故障处理状态">
       </el-table-column>
       <el-table-column
         prop="solvedTime"
@@ -78,10 +92,11 @@
         prop="solvedMethod"
         header-align="center"
         align="center"
+        :formatter="(row)=>{return row.solvedMethod == 0?'设备自修复' : row.solvedMethod ==1?'远程处理' : row.solvedMethod==2?'现场处理':'--'}"
         label="处理方式">
       </el-table-column>
       <el-table-column
-        prop="troubleShooter"
+        prop="userName"
         header-align="center"
         align="center"
         label="故障解决人员">

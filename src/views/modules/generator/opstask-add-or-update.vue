@@ -207,7 +207,7 @@
       },
       getUserList() {
         this.$http({
-          url: this.$http.adornUrl('/sys/user/list')
+          url: this.$http.adornUrl('/sys/user/list?limit=1008611')
         }).then(({data}) => {
           if (data.page) {
             this.userList = data.page.list || []
