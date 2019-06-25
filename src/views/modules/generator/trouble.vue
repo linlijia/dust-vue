@@ -2,7 +2,12 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-select v-model="dataForm.key">
+          <el-option v-for="(i, idx) in searchList" :key="idx" :value="i.value" :label="i.label"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.value" placeholder="搜索" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -130,11 +135,13 @@
 <script>
   import AddOrUpdate from './trouble-add-or-update'
 
+  const searchList = [{'value': 'site_name', 'label': '按站点'}, {'value': 'name', 'label': '按姓名'}]
   export default {
     data() {
       return {
         dataForm: {
-          key: ''
+          key: searchList[0].value,
+          value: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -143,7 +150,8 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        troublCodeName: ''
+        troublCodeName: '',
+        searchList: searchList
       }
     },
     troubleCodeList: [],
@@ -163,9 +171,10 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key,
             'sidx': 'id',
-            'order': 'desc'
+            'order': 'desc',
+            'searchType': 'like',
+            ...this.dataForm
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
