@@ -30,10 +30,11 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        type="index"
+        :index="(index)=>{return (pageIndex-1)*pageSize + index +1}"
         header-align="center"
         align="center"
-        label="">
+        label="序号">
       </el-table-column>
       <el-table-column
         prop="content"
@@ -123,7 +124,7 @@
         dataListSelections: [],
         addOrUpdateVisible: false,
 
-        typeList: [{label:'运维任务',value:'运维任务'},{label:'系统通知',value:'系统通知'},{label:'其他',value:'其他'}]
+        typeList: [{label:'运维任务',value:'运维任务'},{label:'系统通知',value:'系统通知'},{label:'故障通知',value:'故障通知'},{label:'其他',value:'其他'}]
       }
     },
     components: {
@@ -143,7 +144,9 @@
             'page': this.pageIndex,
             'limit': this.pageSize,
             'key': this.dataForm.key,
-            'type': this.dataForm.type
+            'type': this.dataForm.type,
+            'sidx': 'id',
+            'order': 'desc'
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
