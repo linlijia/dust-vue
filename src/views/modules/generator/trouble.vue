@@ -2,19 +2,19 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <!-- <el-input v-model="dataForm.status" placeholder="状态" clearable></el-input> -->
-        <el-select v-model="dataForm.type" placeholder="消息类型">
-          <el-option v-for="(item,index) in typeList" :key="index" :label="item.label" :value="item.value"></el-option>
+        <el-select v-model="dataForm.key">
+          <el-option v-for="(i, idx) in searchList" :key="idx" :value="i.value" :label="i.label"/>
         </el-select>
       </el-form-item>
-      <!--<el-form-item>-->
-        <!--<el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>-->
-      <!--</el-form-item>-->
+      <el-form-item>
+        <el-input v-model="dataForm.value" placeholder="搜索" clearable></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:notify:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('generator:notify:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-        <!-- <el-button v-if="isAuth('generator:notify:delete')" type="primary" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量已读</el-button> -->
+        <!--<el-button v-if="isAuth('generator:trouble:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
+        <el-button v-if="isAuth('generator:trouble:delete')" type="danger" @click="deleteHandle()"
+                   :disabled="dataListSelections.length <= 0">批量删除
+        </el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -36,47 +36,74 @@
         align="center"
         label="序号">
       </el-table-column>
-      <el-table-column
-        prop="content"
-        header-align="center"
-        align="center"
-        label="消息内容">
-      </el-table-column>
-      <el-table-column
-        prop="type"
-        header-align="center"
-        align="center"
-        label="消息类型">
-      </el-table-column>
-      <el-table-column
-        prop="createAt"
-        header-align="center"
-        align="center"
-        label="消息生成时间">
-      </el-table-column>
       <!--<el-table-column-->
-        <!--prop="messageStatus"-->
-        <!--header-align="center"-->
-        <!--align="center"-->
-        <!--label="状态">-->
+      <!--prop="id"-->
+      <!--header-align="center"-->
+      <!--align="center"-->
+      <!--label="编号">-->
       <!--</el-table-column>-->
-      <!--<el-table-column-->
-        <!--prop="linkId"-->
-        <!--header-align="center"-->
-        <!--align="center"-->
-        <!--label="关联ID">-->
-      <!--</el-table-column>-->
+      <el-table-column
+        prop="happenTime"
+        header-align="center"
+        align="center"
+        label="发生时间">
+      </el-table-column>
+      <el-table-column
+        prop="siteName"
+        header-align="center"
+        align="center"
+        label="站点名称">
+      </el-table-column>
+      <el-table-column
+        prop="mn"
+        header-align="center"
+        align="center"
+        label="设备编码">
+      </el-table-column>
+      <el-table-column
+        prop="troubleCode"
+        header-align="center"
+        align="center"
+        :disable=true
+        label="故障类型编码">
+      </el-table-column>
+      <el-table-column
+        prop="troublCodeName"
+        header-align="center"
+        align="center"
+        label="故障类型">
+      </el-table-column>
+      <el-table-column
+        prop="troubleDescription"
+        header-align="center"
+        align="center"
+        label="故障描述">
+      </el-table-column>
+      <el-table-column
+        prop="solved"
+        header-align="center"
+        align="center"
+        :formatter="(row)=>{return row.solved == 0?'未解决' : row.solved ==1?'已解决' :'--'}"
+        label="故障处理状态">
+      </el-table-column>
+      <el-table-column
+        prop="solvedTime"
+        header-align="center"
+        align="center"
+        label="解决时间">
+      </el-table-column>
+      <el-table-column
+        prop="solvedMethod"
+        header-align="center"
+        align="center"
+        :formatter="(row)=>{return row.solvedMethod == 0?'设备自修复' : row.solvedMethod ==1?'远程处理' : row.solvedMethod==2?'现场处理':'--'}"
+        label="处理方式">
+      </el-table-column>
       <el-table-column
         prop="userName"
         header-align="center"
         align="center"
-        label="通知人">
-      </el-table-column>
-      <el-table-column
-        prop="creatorName"
-        header-align="center"
-        align="center"
-        label="创建人">
+        label="故障解决人员">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -85,8 +112,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="messageStatusChange(scope.row.id)">已读</el-button>
-          <!-- <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button> -->
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -106,15 +132,15 @@
 </template>
 
 <script>
-/**
- * messageStatus: 0未读，1已读
- */
-  import AddOrUpdate from './notify-add-or-update'
+  import AddOrUpdate from './trouble-add-or-update'
+
+  const searchList = [{'value': 'site_name', 'label': '按站点'}, {'value': 'name', 'label': '按姓名'}]
   export default {
-    data () {
+    data() {
       return {
         dataForm: {
-          key: ''
+          key: searchList[0].value,
+          value: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -123,30 +149,31 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-
-        typeList: [{label:'运维任务',value:'运维任务'},{label:'系统通知',value:'系统通知'},{label:'故障通知',value:'故障通知'},{label:'其他',value:'其他'}]
+        troublCodeName: '',
+        searchList: searchList
       }
     },
+    troubleCodeList: [],
     components: {
       AddOrUpdate
     },
-    activated () {
+    activated() {
       this.getDataList()
     },
     methods: {
       // 获取数据列表
-      getDataList () {
+      getDataList() {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/notify/list'),
+          url: this.$http.adornUrl('/generator/trouble/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key,
-            'type': this.dataForm.type,
             'sidx': 'id',
-            'order': 'desc'
+            'order': 'desc',
+            'searchType': 'like',
+            ...this.dataForm
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -160,29 +187,29 @@
         })
       },
       // 每页数
-      sizeChangeHandle (val) {
+      sizeChangeHandle(val) {
         this.pageSize = val
         this.pageIndex = 1
         this.getDataList()
       },
       // 当前页
-      currentChangeHandle (val) {
+      currentChangeHandle(val) {
         this.pageIndex = val
         this.getDataList()
       },
       // 多选
-      selectionChangeHandle (val) {
+      selectionChangeHandle(val) {
         this.dataListSelections = val
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
+      addOrUpdateHandle(id) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
         })
       },
       // 删除
-      deleteHandle (id) {
+      deleteHandle(id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.id
         })
@@ -192,7 +219,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/notify/delete'),
+            url: this.$http.adornUrl('/generator/trouble/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {
@@ -211,29 +238,16 @@
           })
         })
       },
-      //已读
-      messageStatusChange (id) {
+      // 获取异常状态列表
+      getTroubleTypsList() {
         this.$http({
-              url: this.$http.adornUrl(`/generator/notify/update`),
-              method: 'post',
-              data: this.$http.adornData({
-                'id': id || undefined,
-                'isRead': 1
-              })
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.getDataList()
-                  }
-                })
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
+          url: this.$http.adornUrl('/generator/trouble/type'),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.troubleCodeList = data.data
+          }
+        })
       }
     }
   }
