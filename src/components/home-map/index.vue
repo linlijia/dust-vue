@@ -1,5 +1,5 @@
 <template>
-  <div class="map-box">
+  <div class="map-box" :style="propStyle">
     <!-- <div id="J_chartMapBox" class="chart-box"></div> -->
     <div id="J_chartMapBox2" class="chart-box"></div>
     <el-row class="cir">
@@ -20,6 +20,10 @@ import { setTimeout } from 'timers';
 
 export default {
    props: {
+     propStyle: {
+       type: String,
+       default: ''
+     },
     num: {
       type: Object,
       default: () => {}

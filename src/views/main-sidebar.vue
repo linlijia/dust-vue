@@ -10,10 +10,10 @@
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
           <span slot="title">首页</span>
         </el-menu-item>
-        <!-- <el-menu-item index="analysis" @click="$router.push({ name: 'analysis' })">
+        <el-menu-item index="dashboard" @click="$router.push({ name: 'dashboard' })">
           <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-          <span slot="title">统计分析</span>
-        </el-menu-item> -->
+          <span slot="title">仪表盘</span>
+        </el-menu-item>
         
         <sub-menu
           v-for="menu in menuList"
