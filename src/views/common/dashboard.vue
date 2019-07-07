@@ -91,7 +91,7 @@
       },
       getChartData() {
         this.$http({
-          url: this.$http.adornUrl('generator/devicedata/monthly'),
+          url: this.$http.adornUrl('/generator/devicedata/monthly'),
           params: {
             month: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`
           }
@@ -159,7 +159,7 @@
     mounted() {
       this.getNumData()
       this.$http({
-        url: this.$http.adornUrl('generator/trouble/list'),
+        url: this.$http.adornUrl('/generator/trouble/list'),
         method: 'get',
         params: this.$http.adornParams({
           'sidx': 'happen_time',
