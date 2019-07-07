@@ -4,45 +4,45 @@
 
       <el-col :span="8">
 
-          <el-col class="num" :span="24">
-            <p class="tot">总设备数：{{num.total || 0}}</p>
-            <p class="off">离线设备数：{{num.offline || 0}}</p>
-            <p class="brk">故障设备数：{{num.failure || 0}}</p>
-          </el-col>
-          <el-col class="" :span="24">
-            <el-table
-              :data="tableList.concat(tableList)"
-              border
-              v-loading="tableListLoading"
-              class="home-table"
-              style="width: 100%;"
-              max-height="295">
-              <el-table-column
-                label="序号"
-                type="index"
-                header-align="center"
-                align="center">
-              </el-table-column>
-              <el-table-column
-                label="故障时间"
-                prop="happenTime"
-                header-align="center"
-                align="center">
-              </el-table-column>
-              <el-table-column
-                label="站点"
-                prop="siteName"
-                header-align="center"
-                align="center">
-              </el-table-column>
-              <el-table-column
-                label="故障类型"
-                prop="troublCodeName"
-                header-align="center"
-                align="center">
-              </el-table-column>
-            </el-table>
-          </el-col>
+        <el-col class="num" :span="24">
+          <p class="tot">总设备数：{{num.total || 0}}</p>
+          <p class="off">离线设备数：{{num.offline || 0}}</p>
+          <p class="brk">故障设备数：{{num.failure || 0}}</p>
+        </el-col>
+        <el-col class="" :span="24">
+          <el-table
+            :data="tableList"
+            border
+            v-loading="tableListLoading"
+            class="home-table"
+            style="width: 100%;"
+            max-height="295">
+            <el-table-column
+              label="序号"
+              type="index"
+              header-align="center"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              label="故障时间"
+              prop="happenTime"
+              header-align="center"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              label="站点"
+              prop="siteName"
+              header-align="center"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              label="故障类型"
+              prop="troublCodeName"
+              header-align="center"
+              align="center">
+            </el-table-column>
+          </el-table>
+        </el-col>
       </el-col>
       <el-col :span="16">
         <HomeMap :propStyle="propStyle" :num="num"></HomeMap>
@@ -58,8 +58,9 @@
 <script>
   import HomeMap from '@/components/home-map'
   import echarts from 'echarts'
+
   export default {
-    data () {
+    data() {
       return {
         num: {
           failure: 0,
@@ -79,11 +80,11 @@
       HomeMap
     },
     methods: {
-      getNumData () {
+      getNumData() {
         this.$http({
-          url : this.$http.adornUrl('/generator/device/status')
+          url: this.$http.adornUrl('/generator/device/status')
         }).then(({data}) => {
-          if(data.count) {
+          if (data.count) {
             this.num = data.count
           }
         })
@@ -107,7 +108,7 @@
         // var chartLegend = []
         var chartxAxis = []
         var chartSeries = []
-        for(let [key, value] of Object.entries(dustData)) {
+        for (let [key, value] of Object.entries(dustData)) {
           chartxAxis.push(key)
           chartSeries.push(value)
         }
@@ -142,10 +143,10 @@
             name: '降尘自动监测仪测量值',
             type: 'bar',
             data: chartSeries
-          },{
+          }, {
             name: '降尘自动监测仪平均值',
             type: 'line',
-            data: chartSeries.map(i=>avgDate)
+            data: chartSeries.map(i => avgDate)
           }]
         }
         this.chartBar1 = echarts.init(document.getElementById('J_dashBarBox'))
@@ -155,14 +156,19 @@
         })
       },
     },
-    mounted () {
+    mounted() {
       this.getNumData()
       this.$http({
-        url : this.$http.adornUrl('/generator/trouble/list')
+        url: this.$http.adornUrl('generator/trouble/list'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'sidx': 'happen_time',
+          'order': 'desc'
+        })
       }).then(({data}) => {
-          if(data.page) {
-            this.tableList = data.page.list ||  []
-          }
+        if (data.page) {
+          this.tableList = data.page.list || []
+        }
       })
 
       this.getChartData()
@@ -171,29 +177,29 @@
 </script>
 
 <style lang="scss">
-.mod-dashboard {
-  .num {
-    p {
-      line-height: 30px;
-      margin-bottom: 5px;
-      color: #fff;
-      text-align: center
-    }
-    .tot {
+  .mod-dashboard {
+    .num {
+      p {
+        line-height: 30px;
+        margin-bottom: 5px;
+        color: #fff;
+        text-align: center
+      }
+      .tot {
         background: #0ACD80;
-    }
-    .off {
+      }
+      .off {
         background: #8b8787
-    }
-    .brk {
+      }
+      .brk {
         background: #FB0505
+      }
     }
-  }
 
-  .chart-box {
+    .chart-box {
       min-height: 500px;
       margin-top: 15px;
     }
-}
+  }
 </style>
 
