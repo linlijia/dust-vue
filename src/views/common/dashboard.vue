@@ -2,21 +2,21 @@
   <div class="mod-dashboard">
     <el-row :gutter="10">
 
-      <el-col :span="7">
+      <el-col :span="8">
 
           <el-col class="num" :span="24">
-            <p>总设备数：{{num.total || 0}}</p>
-            <p>在线设备数：{{num.online || 0}}</p>
-            <p>故障设备数：{{num.failure || 0}}</p>
+            <p class="tot">总设备数：{{num.total || 0}}</p>
+            <p class="off">离线设备数：{{num.offline || 0}}</p>
+            <p class="brk">故障设备数：{{num.failure || 0}}</p>
           </el-col>
           <el-col class="" :span="24">
             <el-table
-              :data="tableList"
+              :data="tableList.concat(tableList)"
               border
               v-loading="tableListLoading"
               class="home-table"
               style="width: 100%;"
-              max-height="710">
+              max-height="295">
               <el-table-column
                 label="序号"
                 type="index"
@@ -44,7 +44,7 @@
             </el-table>
           </el-col>
       </el-col>
-      <el-col :span="17">
+      <el-col :span="16">
         <HomeMap :propStyle="propStyle" :num="num"></HomeMap>
       </el-col>
 
@@ -172,12 +172,27 @@
 
 <style lang="scss">
 .mod-dashboard {
-  .num p {
-    line-height: 30px;
+  .num {
+    p {
+      line-height: 30px;
+      margin-bottom: 5px;
+      color: #fff;
+      text-align: center
+    }
+    .tot {
+        background: #0ACD80;
+    }
+    .off {
+        background: #8b8787
+    }
+    .brk {
+        background: #FB0505
+    }
   }
 
   .chart-box {
       min-height: 500px;
+      margin-top: 15px;
     }
 }
 </style>
