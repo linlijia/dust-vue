@@ -34,6 +34,7 @@ const mainRoutes = {
     // 2. iframeUrl: 是否通过iframe嵌套展示内容, '以http[s]://开头': 是, '': 否
     // 提示: 如需要通过iframe嵌套展示内容, 但不通过tab打开, 请自行创建组件使用iframe处理!
     { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '首页'} },
+    { path: '/dashboard', component: _import('common/dashboard'), name: 'dashboard', meta: { title: '仪表盘'} },
     // { path: '/analysis', component: _import('common/tongji'), name: 'analysis', meta: { title: '统计分析', isTab: true } },
     { path: '/taskdetail/:id', component: _import('common/task-detail'), name: 'taskdetail', meta: { title: '任务详情', isTab: true } },
     { path: '/sitedetail/:id', component: _import('common/site-detail'), name: 'sitedetail', meta: { title: '站点详情', isTab: true } },
