@@ -38,6 +38,7 @@ const mainRoutes = {
     // { path: '/analysis', component: _import('common/tongji'), name: 'analysis', meta: { title: '统计分析', isTab: true } },
     { path: '/taskdetail/:id', component: _import('common/task-detail'), name: 'taskdetail', meta: { title: '任务详情', isTab: true } },
     { path: '/sitedetail/:id', component: _import('common/site-detail'), name: 'sitedetail', meta: { title: '站点详情', isTab: true } },
+    { path: '/testdevicedetail/:id', component: _import('common/device-detail-test'), name: 'devicedetailtest', meta: { title: '测试设备详情', isTab: true } },
     { path: '/devdetail/:id', component: _import('common/device-detail'), name: 'devdetail', meta: { title: '设备详情', isTab: true } },
 
     // { path: '/analysis/monthly', component: _import('tongji/monthly'), name: 'analysisMonthly', meta: { title: '监测点月度降尘数据统计', isTab: true } },

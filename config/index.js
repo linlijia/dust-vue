@@ -14,11 +14,10 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        target: 'http://47.104.4.223:8080/dust/',
-        // target: 'http://10.250.0.119:8080/dust/',
-        changeOrigin: true,
+        target: 'http://localhost:8081/dust/',
+        // changeOrigin: true,
         pathRewrite: {
-          '^/proxyApi': '/'
+          '^/proxyApi': ''
         }
       }
     },

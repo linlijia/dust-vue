@@ -2,6 +2,11 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
+        <el-select v-model="selectedStatus.key">
+          <el-option v-for="(i, index) in statusList" :key="index" :value="i.value" :label="i.label" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-select v-model="dataForm.key">
           <el-option v-for="(i, idx) in searchList" :key="idx" :value="i.value" :label="i.label" />
         </el-select>
@@ -11,7 +16,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:devicestatus:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <!--<el-button v-if="isAuth('generator:devicestatus:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
         <el-button v-if="isAuth('generator:devicestatus:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -42,7 +47,6 @@
         fixed="left"
         label="设备编码">
       </el-table-column>
-
       <el-table-column
         prop="dataTime"
         header-align="center"
@@ -50,122 +54,210 @@
         fixed="left"
         label="数据时间">
       </el-table-column>
- 
+
       <el-table-column
-        prop="s10001"
+        prop="currentStatus"
         header-align="center"
         align="center"
-        label="X轴偏移量">
-      </el-table-column>
-      <el-table-column
-        prop="s10002"
-        header-align="center"
-        align="center"
-        label="Y轴偏移量">
-      </el-table-column>
-      <el-table-column
-        prop="s10003"
-        header-align="center"
-        align="center"
-        label="热盘温度">
-      </el-table-column>
-      <el-table-column
-        prop="s10004"
-        header-align="center"
-        align="center"
-        label="降尘室温度">
-      </el-table-column>
-      <el-table-column
-        prop="s10005"
-        header-align="center"
-        align="center"
-        label="降尘室温度">
-      </el-table-column>
-      <el-table-column
-        prop="s10006"
-        header-align="center"
-        align="center"
-        label="测量室温度">
-      </el-table-column>
-      <el-table-column
-        prop="s10007"
-        header-align="center"
-        align="center"
-        label="测量室湿度">
-      </el-table-column>
-      <el-table-column
-        prop="s10008"
-        header-align="center"
-        align="center"
-        label="电源电压">
-      </el-table-column>
-      <el-table-column
-        prop="s10009"
-        header-align="center"
-        align="center"
-        label="电池电压">
-      </el-table-column>
-      <el-table-column
-        prop="s10010"
-        header-align="center"
-        align="center"
-        label="经度">
-      </el-table-column>
-      <el-table-column
-        prop="s10011"
-        header-align="center"
-        align="center"
-        label="纬度">
-      </el-table-column>
-      <el-table-column
-        prop="s10012"
-        header-align="center"
-        align="center"
-        label="高度">
-      </el-table-column>
-      <el-table-column
-        prop="s10013"
-        header-align="center"
-        align="center"
-        label="门状态">
-      </el-table-column>
-      <el-table-column
-        prop="s10014"
-        header-align="center"
-        align="center"
-        label="托盘状态">
-      </el-table-column>
-      <el-table-column
-        prop="s10015"
-        header-align="center"
-        align="center"
-        label="降水状态">
-      </el-table-column>
-      <el-table-column
-        prop="s10016"
-        header-align="center"
-        align="center"
-        label="水箱水位状态">
-      </el-table-column>
-      <el-table-column
-        prop="s10017"
-        header-align="center"
-        align="center"
-        label="机芯上电状态">
-      </el-table-column>
-      <el-table-column
-        prop="s10018"
-        header-align="center"
-        align="center"
-        label="机芯校准状态">
+        :formatter="formatStatus"
+        label="设备状态">
       </el-table-column>
       <el-table-column
         prop="operation"
         header-align="center"
         align="center"
-        label="操作">
+        :formatter="formatOperation"
+        label="当前操作">
       </el-table-column>
-
+      <el-table-column
+        prop="troubleSet"
+        header-align="center"
+        align="center"
+        :formatter="formatTrouble"
+        label="故障情况">
+      </el-table-column>
+      <el-table-column
+        prop="weight"
+        header-align="center"
+        align="center"
+        label="重量">
+      </el-table-column>
+      <el-table-column
+        prop="doorStatus"
+        header-align="center"
+        align="center"
+        :formatter="formatDoorStatus"
+        label="门状态">
+      </el-table-column>
+      <el-table-column
+        prop="trayStatus"
+        header-align="center"
+        align="center"
+        :formatter="formatTrayStatus"
+        label="托盘状态">
+      </el-table-column>
+      <el-table-column
+        prop="rainfall"
+        header-align="center"
+        align="center"
+        label="降雨量">
+      </el-table-column>
+      <el-table-column
+        prop="outTemperature"
+        header-align="center"
+        align="center"
+        label="环境温度">
+      </el-table-column>
+      <el-table-column
+        prop="outHumidity"
+        header-align="center"
+        align="center"
+        label="环境湿度">
+      </el-table-column>
+      <el-table-column
+        prop="entranceTemperature"
+        header-align="center"
+        align="center"
+        label="入口温度">
+      </el-table-column>
+      <el-table-column
+        prop="entranceHumidity"
+        header-align="center"
+        align="center"
+        label="入口湿度">
+      </el-table-column>
+      <el-table-column
+        prop="exitTemperature"
+        header-align="center"
+        align="center"
+        label="出口温度">
+      </el-table-column>
+      <el-table-column
+        prop="exitHumidity"
+        header-align="center"
+        align="center"
+        label="出口湿度">
+      </el-table-column>
+      <el-table-column
+        prop="plateTemperature1"
+        header-align="center"
+        align="center"
+        label="热盘温度1">
+      </el-table-column>
+      <el-table-column
+        prop="plateTemperature2"
+        header-align="center"
+        align="center"
+        label="热盘温度2">
+      </el-table-column>
+      <el-table-column
+        prop="plateTemperature3"
+        header-align="center"
+        align="center"
+        label="热盘温度3">
+      </el-table-column>
+      <el-table-column
+        prop="airTemperature"
+        header-align="center"
+        align="center"
+        label="温控温度">
+      </el-table-column>
+      <el-table-column
+        prop="waterTemperature"
+        header-align="center"
+        align="center"
+        label="水蒸气水温">
+      </el-table-column>
+      <el-table-column
+        prop="trayPosition11"
+        header-align="center"
+        align="center"
+        label="电位器11">
+      </el-table-column>
+      <el-table-column
+        prop="trayPosition12"
+        header-align="center"
+        align="center"
+        label="电位器12">
+      </el-table-column>
+      <el-table-column
+        prop="trayPosition21"
+        header-align="center"
+        align="center"
+        label="电位器21">
+      </el-table-column>
+      <el-table-column
+        prop="trayPosition22"
+        header-align="center"
+        align="center"
+        label="电位器22">
+      </el-table-column>
+      <el-table-column
+        prop="up1Limit"
+        header-align="center"
+        align="center"
+        label="托盘上限位1">
+      </el-table-column>
+      <el-table-column
+        prop="up2Limit"
+        header-align="center"
+        align="center"
+        label="托盘上限位2">
+      </el-table-column>
+      <el-table-column
+        prop="down1Limit"
+        header-align="center"
+        align="center"
+        label="托盘下限位1">
+      </el-table-column>
+      <el-table-column
+        prop="down2Limit"
+        header-align="center"
+        align="center"
+        label="托盘下限位2">
+      </el-table-column>
+      <el-table-column
+        prop="openLimit"
+        header-align="center"
+        align="center"
+        label="开门限位">
+      </el-table-column>
+      <el-table-column
+        prop="closeLimit"
+        header-align="center"
+        align="center"
+        label="关门限位">
+      </el-table-column>
+      <el-table-column
+        prop="bucketTrigger"
+        header-align="center"
+        align="center"
+        label="水箱水位">
+      </el-table-column>
+      <el-table-column
+        prop="steamTrigger"
+        header-align="center"
+        align="center"
+        label="水蒸汽水位">
+      </el-table-column>
+      <el-table-column
+        prop="balanceFlag"
+        header-align="center"
+        align="center"
+        label="校准结果">
+      </el-table-column>
+      <el-table-column
+        prop="balanceMode"
+        header-align="center"
+        align="center"
+        label="称量状态">
+      </el-table-column>
+      <el-table-column
+        prop="printMode"
+        header-align="center"
+        align="center"
+        label="数据有效性">
+      </el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -183,10 +275,16 @@
 
 <script>
   import AddOrUpdate from './devicestatus-add-or-update'
-  const searchList = [{'value':'mn', 'label':'按MN码'},{'value':'site_name', 'label':'按站点'}]
+  const statusList = [{'value': '0', 'label': '全部'}, {'value': '1', 'label': '在线'}, {'value': '2', 'label': '离线'},
+    {'value': '3', 'label': '故障'}]
+  const searchList = [{'value': 'mn', 'label': '按MN码'}, {'value': 'site_name', 'label': '按站点'}]
   export default {
     data () {
       return {
+        selectedStatus: {
+          key: statusList[0].value,
+          value: ''
+        },
         dataForm: {
           key: searchList[0].value,
           value: ''
@@ -199,7 +297,8 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        searchList: searchList
+        searchList: searchList,
+        statusList
       }
     },
     components: {
@@ -207,6 +306,15 @@
     },
     activated () {
       this.getDataList()
+    },
+    mounted () {
+      if (this.timer) {
+        clearInterval(this.timer)
+      } else {
+        this.timer = setInterval(() => {
+          this.getDataList()
+        }, 10000)
+      }
     },
     methods: {
       // 获取数据列表
@@ -218,8 +326,9 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'searchType' : 'like',
-            ...this.dataForm
+            'searchType': 'like',
+            ...this.dataForm,
+            ...this.selectedStatus
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -283,6 +392,141 @@
             }
           })
         })
+      },
+      formatStatus (row, column) {
+        switch (row.currentStatus) {
+          case 1000:
+            return '待机'
+          case 2001:
+            return '开门中'
+          case 2002:
+            return '关门中'
+          case 2003:
+            return '托盘上升中'
+          case 2004:
+            return '托盘下降中'
+          case 2005:
+            return '托盘前往平衡位中'
+          case 2006:
+            return '烘烤中'
+          case 2007:
+            return '制冷中'
+          case 2008:
+            return '静置中'
+          case 2009:
+            return '机芯校准中'
+          case 2010:
+            return '机芯清零中'
+          case 2011:
+            return '称重中'
+          case 2012:
+            return '拍照中'
+          case 2013:
+            return '测试称量中'
+          case 9999:
+            return '未知'
+        }
+      },
+      formatOperation (row, column) {
+        switch (row.operation) {
+          case 111:
+            return '拍照开始'
+          case 112:
+            return '发送拍照请求'
+          case 113:
+            return '保存图片'
+          case 114:
+            return '上传图片'
+          case 115:
+            return '拍照结束'
+          case 121:
+            return '生成抓图失败故障'
+          case 211:
+            return '称量开始'
+          case 212:
+            return '静置'
+          case 213:
+            return '称重'
+          case 311:
+            return '关门'
+          case 312:
+            return '开门'
+          case 313:
+            return '托盘上升'
+          case 314:
+            return '托盘下降'
+          case 315:
+            return '托盘前往平衡位'
+          case 316:
+            return '烘烤'
+          case 317:
+            return '制冷平衡'
+          case 318:
+            return '重新校准机芯'
+          case 319:
+            return '关机芯'
+          case 320:
+            return '机芯清零'
+          case 401:
+            return '测试称量开始'
+          case 911:
+            return '生成开门故障'
+          case 912:
+            return '生成托盘上升故障'
+          case 913:
+            return '生成加热故障'
+          case 914:
+            return '生成关门故障'
+          case 915:
+            return '生成制冷故障'
+          case 916:
+            return '生成机芯校准故障'
+          case 917:
+            return '生成机芯清零故障'
+          case 918:
+            return '生成负增长故障'
+          case 999:
+            return '无操作'
+        }
+      },
+      formatTrouble (row, column) {
+        if (row.troubleSet === '90000') {
+          return '无故障'
+        } else {
+          if (row.troubleSet !== null) {
+            return row.troubleSet
+          } else {
+            return '--'
+          }
+        }
+      },
+      formatDoorStatus (row, column) {
+        switch (row.doorStatus) {
+          case 0:
+            return '关'
+          case 1:
+            return '开'
+          case 2:
+            return '未知'
+          case 3:
+            return '异常'
+        }
+      },
+      formatTrayStatus (row, column) {
+        switch (row.trayStatus) {
+          case 1:
+            return '集尘'
+          case 2:
+            return '平衡'
+          case 3:
+            return '称量'
+          case 4:
+            return '未知'
+          case 5:
+            return '异常'
+          default:
+            return '--'
+        }
       }
     }
   }

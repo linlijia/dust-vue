@@ -38,6 +38,7 @@
           <el-table
             :data="deviceStatusList"
             border
+            fit
             v-loading="dataListLoading"
             style="width: 100%;">
             <!-- <el-table-column
@@ -61,118 +62,207 @@
               label="数据时间">
             </el-table-column>
             <el-table-column
-              prop="s10001"
+              prop="currentStatus"
               header-align="center"
               align="center"
-              label="X轴偏移量">
-            </el-table-column>
-            <el-table-column
-              prop="s10002"
-              header-align="center"
-              align="center"
-              label="Y轴偏移量">
-            </el-table-column>
-            <el-table-column
-              prop="s10003"
-              header-align="center"
-              align="center"
-              label="热盘温度">
-            </el-table-column>
-            <el-table-column
-              prop="s10004"
-              header-align="center"
-              align="center"
-              label="降尘室温度">
-            </el-table-column>
-            <el-table-column
-              prop="s10005"
-              header-align="center"
-              align="center"
-              label="降尘室温度">
-            </el-table-column>
-            <el-table-column
-              prop="s10006"
-              header-align="center"
-              align="center"
-              label="测量室温度">
-            </el-table-column>
-            <el-table-column
-              prop="s10007"
-              header-align="center"
-              align="center"
-              label="测量室湿度">
-            </el-table-column>
-            <el-table-column
-              prop="s10008"
-              header-align="center"
-              align="center"
-              label="电源电压">
-            </el-table-column>
-            <el-table-column
-              prop="s10009"
-              header-align="center"
-              align="center"
-              label="电池电压">
-            </el-table-column>
-            <el-table-column
-              prop="s10010"
-              header-align="center"
-              align="center"
-              label="经度">
-            </el-table-column>
-            <el-table-column
-              prop="s10011"
-              header-align="center"
-              align="center"
-              label="纬度">
-            </el-table-column>
-            <el-table-column
-              prop="s10012"
-              header-align="center"
-              align="center"
-              label="高度">
-            </el-table-column>
-            <el-table-column
-              prop="s10013"
-              header-align="center"
-              align="center"
-              label="门状态">
-            </el-table-column>
-            <el-table-column
-              prop="s10014"
-              header-align="center"
-              align="center"
-              label="托盘状态">
-            </el-table-column>
-            <el-table-column
-              prop="s10015"
-              header-align="center"
-              align="center"
-              label="降水状态">
-            </el-table-column>
-            <el-table-column
-              prop="s10016"
-              header-align="center"
-              align="center"
-              label="水箱水位状态">
-            </el-table-column>
-            <el-table-column
-              prop="s10017"
-              header-align="center"
-              align="center"
-              label="机芯上电状态">
-            </el-table-column>
-            <el-table-column
-              prop="s10018"
-              header-align="center"
-              align="center"
-              label="机芯校准状态">
+              :formatter="formatStatus"
+              label="设备状态">
             </el-table-column>
             <el-table-column
               prop="operation"
               header-align="center"
               align="center"
-              label="操作">
+              :formatter="formatOperation"
+              label="当前操作">
+            </el-table-column>
+            <el-table-column
+              prop="troubleSet"
+              header-align="center"
+              align="center"
+              :formatter="formatTrouble"
+              label="故障情况">
+            </el-table-column>
+            <el-table-column
+              prop="weight"
+              header-align="center"
+              align="center"
+              label="重量">
+            </el-table-column>
+            <el-table-column
+              prop="doorStatus"
+              header-align="center"
+              align="center"
+              :formatter="formatDoorStatus"
+              label="门状态">
+            </el-table-column>
+            <el-table-column
+              prop="trayStatus"
+              header-align="center"
+              align="center"
+              :formatter="formatTrayStatus"
+              label="托盘状态">
+            </el-table-column>
+            <el-table-column
+              prop="rainfall"
+              header-align="center"
+              align="center"
+              label="降雨量">
+            </el-table-column>
+            <el-table-column
+              prop="outTemperature"
+              header-align="center"
+              align="center"
+              label="环境温度">
+            </el-table-column>
+            <el-table-column
+              prop="outHumidity"
+              header-align="center"
+              align="center"
+              label="环境湿度">
+            </el-table-column>
+            <el-table-column
+              prop="entranceTemperature"
+              header-align="center"
+              align="center"
+              label="入口温度">
+            </el-table-column>
+            <el-table-column
+              prop="entranceHumidity"
+              header-align="center"
+              align="center"
+              label="入口湿度">
+            </el-table-column>
+            <el-table-column
+              prop="exitTemperature"
+              header-align="center"
+              align="center"
+              label="出口温度">
+            </el-table-column>
+            <el-table-column
+              prop="exitHumidity"
+              header-align="center"
+              align="center"
+              label="出口湿度">
+            </el-table-column>
+            <el-table-column
+              prop="plateTemperature1"
+              header-align="center"
+              align="center"
+              label="热盘温度1">
+            </el-table-column>
+            <el-table-column
+              prop="plateTemperature2"
+              header-align="center"
+              align="center"
+              label="热盘温度2">
+            </el-table-column>
+            <el-table-column
+              prop="plateTemperature3"
+              header-align="center"
+              align="center"
+              label="热盘温度3">
+            </el-table-column>
+            <el-table-column
+              prop="airTemperature"
+              header-align="center"
+              align="center"
+              label="温控温度">
+            </el-table-column>
+            <el-table-column
+              prop="waterTemperature"
+              header-align="center"
+              align="center"
+              label="水蒸气水温">
+            </el-table-column>
+            <el-table-column
+              prop="trayPosition11"
+              header-align="center"
+              align="center"
+              label="电位器11">
+            </el-table-column>
+            <el-table-column
+              prop="trayPosition12"
+              header-align="center"
+              align="center"
+              label="电位器12">
+            </el-table-column>
+            <el-table-column
+              prop="trayPosition21"
+              header-align="center"
+              align="center"
+              label="电位器21">
+            </el-table-column>
+            <el-table-column
+              prop="trayPosition22"
+              header-align="center"
+              align="center"
+              label="电位器22">
+            </el-table-column>
+            <el-table-column
+              prop="up1Limit"
+              header-align="center"
+              align="center"
+              label="托盘上限位1">
+            </el-table-column>
+            <el-table-column
+              prop="up2Limit"
+              header-align="center"
+              align="center"
+              label="托盘上限位2">
+            </el-table-column>
+            <el-table-column
+              prop="down1Limit"
+              header-align="center"
+              align="center"
+              label="托盘下限位1">
+            </el-table-column>
+            <el-table-column
+              prop="down2Limit"
+              header-align="center"
+              align="center"
+              label="托盘下限位2">
+            </el-table-column>
+            <el-table-column
+              prop="openLimit"
+              header-align="center"
+              align="center"
+              label="开门限位">
+            </el-table-column>
+            <el-table-column
+              prop="closeLimit"
+              header-align="center"
+              align="center"
+              label="关门限位">
+            </el-table-column>
+            <el-table-column
+              prop="bucketTrigger"
+              header-align="center"
+              align="center"
+              label="水箱水位">
+            </el-table-column>
+            <el-table-column
+              prop="steamTrigger"
+              header-align="center"
+              align="center"
+              label="水蒸汽水位">
+            </el-table-column>
+            <el-table-column
+              prop="balanceFlag"
+              header-align="center"
+              align="center"
+              label="校准结果">
+            </el-table-column>
+            <el-table-column
+              prop="balanceMode"
+              header-align="center"
+              align="center"
+              label="称量状态">
+            </el-table-column>
+            <el-table-column
+              prop="printMode"
+              header-align="center"
+              align="center"
+              label="数据有效性">
             </el-table-column>
           </el-table>
         </el-card>
@@ -269,8 +359,8 @@
         })
       },
 
-      changeChartType(type) {
-        if (type == this.chartType) return
+      changeChartType (type) {
+        if (type === this.chartType) return
 
         this.chartType = type
         this.initChartBar()
@@ -367,5 +457,6 @@
       font-size: 21px;
     }
   }
+
 </style>
 

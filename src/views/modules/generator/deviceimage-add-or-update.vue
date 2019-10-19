@@ -99,7 +99,7 @@
         })
       },
       handleRemove (file, fileList) {
-        this.dataForm.path = '';
+        this.dataForm.path = ''
         this.fileList = []
       },
       uploadFunc (file) {

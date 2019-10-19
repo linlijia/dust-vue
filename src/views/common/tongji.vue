@@ -1,7 +1,7 @@
 <template>
   <div class="mod-tongji">
      <el-row :gutter="20">
-       
+
       <el-col :span="24" class="mod-col">
         <el-card>
           <div class="flex-icon-bar">
@@ -26,7 +26,7 @@
         <el-card>
           <div class="flex-icon-bar">
             <h2>监测点实时数据统计图</h2>
-            
+
             <div>
               <i class="iconfont icon-linechart"></i>
               <i class="iconfont icon-barchart"></i>
@@ -103,7 +103,7 @@
         // var chartLegend = []
         var chartxAxis = []
         var chartSeries = []
-        for(let [key, value] of Object.entries(dustData)) {
+        for (let [key, value] of Object.entries(dustData)) {
           chartxAxis.push(key)
           chartSeries.push(value)
         }

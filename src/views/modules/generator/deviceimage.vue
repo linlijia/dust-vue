@@ -39,6 +39,12 @@
         label="序号">
       </el-table-column>
       <el-table-column
+        prop="siteName"
+        header-align="center"
+        align="center"
+        label="站点名称">
+      </el-table-column>
+      <el-table-column
         prop="mn"
         header-align="center"
         align="center"
@@ -57,7 +63,7 @@
         width="300"
         label="图片">
         <template slot-scope="scope">
-          <img class="img" :src="scope.row.path"/>
+          <img class="img" :src="scope.row.path" @click="openGallery(scope.$index)"/>
         </template>
       </el-table-column>
       <el-table-column
@@ -83,11 +89,14 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <LightBox :images="images" :show-light-box="false" :show-caption="true" ref="lightbox"></LightBox>
   </div>
 </template>
 
 <script>
 import AddOrUpdate from './deviceimage-add-or-update'
+import LightBox from 'vue-image-lightbox'
+require('vue-image-lightbox/dist/vue-image-lightbox.min.css')
 
 const searchList = [{'value': 'mn', 'label': '按MN码'}]
 export default {
@@ -104,11 +113,13 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
-      searchList: searchList
+      searchList: searchList,
+      images: []
     }
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    LightBox
   },
   activated () {
     this.getDataList()
@@ -130,12 +141,25 @@ export default {
         if (data && data.code === 0) {
           this.dataList = data.page.list
           this.totalPage = data.page.totalCount
+          this.initImages()
         } else {
           this.dataList = []
           this.totalPage = 0
+          this.images = []
         }
         this.dataListLoading = false
       })
+    },
+    initImages () {
+      for (let item of this.dataList) {
+        this.images.push({
+          thumb: item.path,
+          src: item.path,
+          caption: '<h4>' + item.siteName + ':' + item.mn + '</h4>'})
+      }
+    },
+    openGallery (index) {
+      this.$refs.lightbox.showImage(index)
     },
     // 每页数
     sizeChangeHandle (val) {

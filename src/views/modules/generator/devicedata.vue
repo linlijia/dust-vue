@@ -66,11 +66,17 @@
         label="月降尘量（t/km²*M）">
       </el-table-column>
       <el-table-column
+        prop="weight"
+        header-align="center"
+        align="center"
+        label="内校砝码值（g）">
+      </el-table-column>
+      <el-table-column
         prop="a34011Flag"
         header-align="center"
         align="center"
         :formatter="(row, column, cellValue)=>{return sMap[cellValue]}"
-        label="降尘数据标识位(a34011-ori)">
+        label="降尘数据标识位">
       </el-table-column>
       <el-table-column
         prop="a34011Day"

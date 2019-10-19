@@ -18,7 +18,7 @@
           </el-col>
           <el-col :span="8">
             <p>总设备数：{{num.total || 0}}</p>
-            <p>在线设备数：{{num.online || 0}}</p>
+            <p>离线线设备数：{{num.offline || 0}}</p>
             <p>故障设备数：{{num.failure || 0}}</p>
           </el-col>
         </el-row>
@@ -107,9 +107,9 @@
     methods: {
       getNumData () {
         this.$http({
-          url : this.$http.adornUrl('/generator/device/status')
+          url: this.$http.adornUrl('/generator/device/status')
         }).then(({data}) => {
-          if(data.count) {
+          if (data.count) {
             this.num = data.count
           }
         })
@@ -118,28 +118,28 @@
         this.$http({
           url: this.$http.adornUrl('/generator/weather/101020100')
         }).then(({data}) => {
-          if(data.data) {
+          if (data.data) {
             this.weatherData = {
-              city : data.data.cityInfo && data.data.cityInfo.city || '上海市',
-              time : data.data.data.forecast && data.data.data.forecast[0] && data.data.data.forecast[0].ymd,
-              type : data.data.data.forecast && data.data.data.forecast[0] && data.data.data.forecast[0].type,
-              wendu : data.data.data.wendu
+              city: data.data.cityInfo && data.data.cityInfo.city || '上海市',
+              time: data.data.data.forecast && data.data.data.forecast[0] && data.data.data.forecast[0].ymd,
+              type: data.data.data.forecast && data.data.data.forecast[0] && data.data.data.forecast[0].type,
+              wendu: data.data.data.wendu
             }
           }
-       })
+        })
       }
     },
     mounted () {
       this.getNumData()
       this.getWeather()
       this.$http({
-        url : this.$http.adornUrl('/generator/site/map/list')
+        url: this.$http.adornUrl('/generator/site/map/list')
       }).then(({data}) => {
-          if(data.data) {
-            this.dataList = data.data ||  []
-          }
+        if (data.data) {
+          this.dataList = data.data || []
+        }
       })
-    },
+    }
   }
 </script>
 

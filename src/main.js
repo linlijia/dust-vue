@@ -12,9 +12,11 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import ECharts from 'vue-echarts'
+import VueLazyLoad from 'vue-lazyload'
 
 Vue.component('v-chart', ECharts)
 Vue.use(VueCookie)
+Vue.use(VueLazyLoad)
 Vue.config.productionTip = false
 
 // 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock

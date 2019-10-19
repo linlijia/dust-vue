@@ -83,7 +83,7 @@
         prop="solved"
         header-align="center"
         align="center"
-        :formatter="(row)=>{return row.solved == 0?'未解决' : row.solved ==1?'已解决' :'--'}"
+        :formatter="(row)=>{return row.solved == 0?'未处理' : row.solved ==1?'已处理' :'--'}"
         label="故障处理状态">
       </el-table-column>
       <el-table-column
@@ -134,7 +134,7 @@
 <script>
   import AddOrUpdate from './trouble-add-or-update'
 
-  const searchList = [{'value': 'site_name', 'label': '按站点'}, {'value': 'name', 'label': '按姓名'}]
+  const searchList = [{'value': 'site_name', 'label': '按站点'}, {'value': 'trouble_description', 'label': '按故障类型'}]
   export default {
     data() {
       return {
